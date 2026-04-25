@@ -73,6 +73,14 @@ The SQLite database is stored relative to the backend directory. Create the data
 mkdir -p backend/data
 ```
 
+### 3. Create Environment File
+
+Create a `.env` file in the frontend directory to set the port:
+
+```bash
+echo "PORT=3001" > frontend/.env
+```
+
 ### 3. Start Backend
 
 ```bash
