@@ -17,4 +17,4 @@
 ## 4. Integration
 
 - [x] 4.1 Test full workflow
-- [ ] 4.2 Fix any runtime errors
+- [x] 4.2 Fix any runtime errors
