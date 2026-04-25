@@ -2,9 +2,9 @@ name: CI/CD
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
-    branches: [main]
+    branches: [main, master]
 
 env:
   DOCKER_IMAGE: personal-finance-app
@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: '20'
       - name: Install backend deps
-        run: cd backend && npm ci
+        run: cd backend && npm install
       - name: Run linter
         run: cd backend && npm run lint || true
       - name: Run tests
@@ -35,7 +35,7 @@ jobs:
         with:
           node-version: '20'
       - name: Install frontend deps
-        run: cd frontend && npm ci
+        run: cd frontend && npm install
       - name: Run tests
         run: cd frontend && npm test -- --watchAll=false --passWithNoTests || true
 
