@@ -180,30 +180,30 @@
 
 ## 15. Security & Compliance
 
-- [ ] 15.1 Implement HTTPS enforcement
-- [ ] 15.2 Set up Content Security Policy (CSP) headers
-- [ ] 15.3 Implement SQL injection prevention (parameterized queries)
+- [x] 15.1 Implement HTTPS enforcement
+- [x] 15.2 Set up Content Security Policy (CSP) headers
+- [x] 15.3 Implement SQL injection prevention (parameterized queries)
 - [ ] 15.4 Implement CSRF protection for forms
-- [ ] 15.5 Set up audit logging for sensitive operations
-- [ ] 15.6 Implement data encryption at rest for sensitive fields
+- [x] 15.5 Set up audit logging for sensitive operations
+- [x] 15.6 Implement data encryption at rest for sensitive fields
 - [ ] 15.7 Create GDPR data export feature
-- [ ] 15.8 Implement secure file upload validation for CSV import
-- [ ] 15.9 Create API rate limiting for import endpoints
-- [ ] 15.10 Add input validation and sanitization for CSV data
+- [x] 15.8 Implement secure file upload validation for CSV import
+- [x] 15.9 Create API rate limiting for import endpoints
+- [x] 15.10 Add input validation and sanitization for CSV data
 
 ## 16. Testing
 
-- [ ] 16.1 Write unit tests for transaction calculations
-- [ ] 16.2 Write unit tests for budget calculations
-- [ ] 16.3 Write unit tests for CSV import and duplicate detection
-- [ ] 16.4 Write unit tests for reporting logic
-- [ ] 16.5 Write integration tests for API endpoints
+- [x] 16.1 Write unit tests for transaction calculations
+- [x] 16.2 Write unit tests for budget calculations
+- [x] 16.3 Write unit tests for CSV import and duplicate detection
+- [x] 16.4 Write unit tests for reporting logic
+- [x] 16.5 Write integration tests for API endpoints
 - [ ] 16.6 Write end-to-end tests for user workflows
-- [ ] 16.7 Create test data fixtures and factories
-- [ ] 16.8 Achieve 80% code coverage for backend
-- [ ] 16.9 Write component tests for React components
+- [x] 16.7 Create test data fixtures and factories
+- [x] 16.8 Achieve 80% code coverage for backend
+- [x] 16.9 Write component tests for React components
 - [ ] 16.10 Create performance tests for dashboard with large datasets
-- [ ] 16.11 Test CSV import with various bank formats and large files
+- [x] 16.11 Test CSV import with various bank formats and large files
 
 ## 17. Docker & Deployment
 
