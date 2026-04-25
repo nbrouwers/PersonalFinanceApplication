@@ -105,6 +105,14 @@ cd backend && npm run dev
 cd frontend && npm start
 ```
 
+Or use the convenience script:
+
+```bash
+./scripts/start-dev.sh
+```
+
+Open http://localhost:3001
+
 ## Quick Start (Development)
 
 ### Prerequisites
