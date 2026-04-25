@@ -67,8 +67,10 @@ cd frontend && npm install
 
 ### 2. Create Data Directory
 
+The SQLite database is stored relative to the backend directory. Create the data folder inside `backend/`:
+
 ```bash
-mkdir -p data
+mkdir -p backend/data
 ```
 
 ### 3. Start Backend
