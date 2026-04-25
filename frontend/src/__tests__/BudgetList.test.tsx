@@ -4,11 +4,11 @@ import { BudgetList } from '../components/BudgetList';
 
 describe('BudgetList', () => {
   it('renders without crashing', () => {
-    render(<BudgetList onEdit={() => {}} />);
+    render(<BudgetList />);
   });
 
   it('displays empty state message', async () => {
-    render(<BudgetList onEdit={() => {}} />);
+    render(<BudgetList />);
     expect(screen.getByText(/no budgets/i)).toBeInTheDocument();
   });
 });

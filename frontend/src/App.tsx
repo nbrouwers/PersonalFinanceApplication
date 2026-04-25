@@ -117,7 +117,7 @@ function App() {
         </TabPanel>
 
         <TabPanel value={tab} index={1}>
-          <BudgetList onEdit={() => {}} />
+          <BudgetList />
         </TabPanel>
 
         <TabPanel value={tab} index={2}>
