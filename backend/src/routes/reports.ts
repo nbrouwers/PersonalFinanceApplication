@@ -15,13 +15,13 @@ export function createReportsRouter(_db: { query: (sql: string, params?: any[]) 
       const endDate = (req.query.endDate as string) || '2026-12-31';
       
       const incomeResult = await query(
-        'SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE user_id = $1 AND type = $2 AND is_deleted = FALSE AND date >= $3 AND date <= $4',
-        [userId, 'income', startDate, endDate]
+        "SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE user_id = ? AND type = 'income' AND is_deleted = 0 AND date >= ? AND date <= ?",
+        [userId, startDate, endDate]
       );
       
       const expenseResult = await query(
-        'SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE user_id = $1 AND type = $2 AND is_deleted = FALSE AND date >= $3 AND date <= $4',
-        [userId, 'expense', startDate, endDate]
+        "SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE user_id = ? AND type = 'expense' AND is_deleted = 0 AND date >= ? AND date <= ?",
+        [userId, startDate, endDate]
       );
       
       const income = parseFloat(incomeResult.rows[0]?.total || '0');
