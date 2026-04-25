@@ -72,6 +72,7 @@ export function BudgetDialog({ open, budget, categories, onClose, onSave, onCate
       setNewCategoryMode(false);
       setNewCategoryName('');
       setCategoryId(newCategory.id);
+      if (onCategoriesChange) onCategoriesChange();
     } catch (err) {
       console.error('Failed to create category:', err);
     } finally {
