@@ -105,14 +105,14 @@
 
 ## 9. Data Export
 
-- [ ] 9.1 Create CSV export utility for transactions
+- [x] 9.1 Create CSV export utility for transactions
 - [ ] 9.2 Create PDF export utility for reports and dashboards
 - [ ] 9.3 Create Excel export with multiple sheets
-- [ ] 9.4 Implement GET /api/v1/export/csv endpoint
+- [x] 9.4 Implement GET /api/v1/export/csv endpoint
 - [ ] 9.5 Implement GET /api/v1/export/pdf endpoint
 - [ ] 9.6 Implement GET /api/v1/export/excel endpoint
 - [ ] 9.7 Create data archive generation (ZIP of all user data)
-- [ ] 9.8 Implement export history tracking
+- [x] 9.8 Implement export history tracking
 - [ ] 9.9 Implement OFX format export for compatibility
 - [ ] 9.10 Create data sanitization options for privacy
 - [ ] 9.11 Set up export download link expiration (7 days)
@@ -169,14 +169,14 @@
 
 ## 14. Frontend - Reports & Export
 
-- [ ] 14.1 Create reports list view
+- [x] 14.1 Create reports list view
 - [ ] 14.2 Create report generator interface
 - [ ] 14.3 Implement custom report builder with parameter selection
-- [ ] 14.4 Create export options menu (CSV, PDF, Excel)
-- [ ] 14.5 Implement export progress indicator
-- [ ] 14.6 Add export history view
+- [x] 14.4 Create export options menu (CSV, PDF, Excel)
+- [x] 14.5 Implement export progress indicator
+- [x] 14.6 Add export history view
 - [ ] 14.7 Implement report templates system
-- [ ] 14.8 Add quick export from dashboard
+- [x] 14.8 Add quick export from dashboard
 
 ## 15. Security & Compliance
 
@@ -213,7 +213,7 @@
 - [x] 17.4 Create docker-compose for production with volumes
 - [x] 17.5 Configure Docker networking for app, database, Redis
 - [x] 17.6 Set up volume mounts for data persistence
-- [ ] 17.7 Create deployment guide for Synology NAS
+- [x] 17.7 Create deployment guide for Synology NAS
 - [ ] 17.8 Test deployment on Synology Docker/Container Manager
 - [ ] 17.9 Configure CI/CD pipeline (GitHub Actions)
 - [ ] 17.10 Set up staging environment
@@ -226,15 +226,15 @@
 
 ## 18. Documentation
 
-- [ ] 18.1 Create API documentation (OpenAPI/Swagger)
-- [ ] 18.2 Write README with setup instructions
-- [ ] 18.3 Document database schema
-- [ ] 18.4 Create architecture documentation
-- [ ] 18.5 Write user guide for end users
-- [ ] 18.6 Document deployment process (including Synology)
+- [x] 18.1 Create API documentation (OpenAPI/Swagger)
+- [x] 18.2 Write README with setup instructions
+- [x] 18.3 Document database schema
+- [x] 18.4 Create architecture documentation
+- [x] 18.5 Write user guide for end users
+- [x] 18.6 Document deployment process (including Synology)
 - [ ] 18.7 Create troubleshooting guide
-- [ ] 18.8 Document configuration options
-- [ ] 18.9 Create CSV import format guide for users
+- [x] 18.8 Document configuration options
+- [x] 18.9 Create CSV import format guide for users
 
 ## 19. Performance Optimization
 
