@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, FormControl, InputLabel, Select, Box, IconButton } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, FormControl, InputLabel, Select, Box, IconButton, Grid, Typography, Alert } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 
 interface Category {
@@ -18,12 +18,12 @@ interface Budget {
 interface BudgetDialogProps {
   open: boolean;
   budget: Budget | null;
+  categories: Category[];
   onClose: () => void;
   onSave: (budget: Budget) => void;
 }
 
-export function BudgetDialog({ open, budget, onClose, onSave }: BudgetDialogProps) {
-  const [categories, setCategories] = useState<Category[]>([]);
+export function BudgetDialog({ open, budget, categories, onClose, onSave }: BudgetDialogProps) {
   const [categoryId, setCategoryId] = useState<number>(0);
   const [amount, setAmount] = useState<string>('');
   const [period, setPeriod] = useState<'monthly' | 'yearly'>('monthly');
@@ -33,7 +33,6 @@ export function BudgetDialog({ open, budget, onClose, onSave }: BudgetDialogProp
 
   useEffect(() => {
     if (open) {
-      fetchCategories();
       if (budget) {
         setCategoryId(budget.category_id);
         setAmount(budget.limit_amount.toString());
@@ -48,17 +47,7 @@ export function BudgetDialog({ open, budget, onClose, onSave }: BudgetDialogProp
     }
   }, [open, budget]);
 
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch('/api/v1/categories?type=expense');
-      const data = await response.json();
-      setCategories(data || []);
-    } catch (err) {
-      console.error('Failed to fetch categories:', err);
-    }
-  };
-
-const handleCategoryChange = async (value: unknown) => {
+  const handleCategoryChange = async (value: unknown) => {
     const numValue = typeof value === 'string' ? parseInt(value) : (value as number);
     if (numValue === -1) {
       setNewCategoryMode(true);
@@ -89,10 +78,16 @@ const handleCategoryChange = async (value: unknown) => {
     }
   };
 
-  const handleDeleteCategory = async (categoryId: number) => {
+  const handleDeleteCategory = async (catId: number, catName: string) => {
+    if (!confirm(`Delete category "${catName}"?`)) return;
     try {
-      await fetch(`/api/v1/categories/${categoryId}`, { method: 'DELETE' });
-      fetchCategories();
+      const res = await fetch(`/api/v1/categories/${catId}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.error || 'Cannot delete category');
+        return;
+      }
+      if (categoryId === catId) setCategoryId(0);
     } catch (err) {
       alert((err as Error).message);
     }
@@ -112,10 +107,24 @@ const handleCategoryChange = async (value: unknown) => {
     }
   };
 
+  const filteredCategories = categories.filter((c) => c.type === 'expense');
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{budget ? 'Edit Budget' : 'Create Budget'}</DialogTitle>
       <DialogContent>
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Period</InputLabel>
+          <Select
+            value={period}
+            label="Period"
+            onChange={(e) => setPeriod(e.target.value as 'monthly' | 'yearly')}
+          >
+            <MenuItem value="monthly">Monthly</MenuItem>
+            <MenuItem value="yearly">Yearly</MenuItem>
+          </Select>
+        </FormControl>
+        
         <FormControl fullWidth margin="normal">
           <InputLabel>Category</InputLabel>
           <Select
@@ -123,17 +132,15 @@ const handleCategoryChange = async (value: unknown) => {
             label="Category"
             onChange={(e) => handleCategoryChange(e.target.value)}
           >
-            {categories.map((cat) => (
+            {filteredCategories.map((cat) => (
               <MenuItem key={cat.id} value={cat.id}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', minWidth: 200 }}>
                   <span>{cat.name}</span>
                   <IconButton 
                     size="small" 
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (confirm(`Delete category "${cat.name}"?`)) {
-                        handleDeleteCategory(cat.id);
-                      }
+                      handleDeleteCategory(cat.id, cat.name);
                     }}
                   >
                     <DeleteIcon fontSize="small" />
@@ -170,23 +177,12 @@ const handleCategoryChange = async (value: unknown) => {
         
         <TextField
           margin="normal"
-          label="Limit Amount"
+          label="Budget Limit"
           type="number"
           fullWidth
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Period</InputLabel>
-          <Select
-            value={period}
-            label="Period"
-            onChange={(e) => setPeriod(e.target.value as 'monthly' | 'yearly')}
-          >
-            <MenuItem value="monthly">Monthly</MenuItem>
-            <MenuItem value="yearly">Yearly</MenuItem>
-          </Select>
-        </FormControl>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>

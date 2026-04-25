@@ -7,11 +7,31 @@ export function createBudgetsRouter(_db: { query: (sql: string, params?: any[]) 
   router.get('/', async (_req: Request, res: Response) => {
     try {
       const userId = 1;
+      const period = _req.query.period as string || 'monthly';
+      
+      let dateFilter = '';
+      if (period === 'monthly') {
+        dateFilter = `AND strftime('%Y-%m', date) = strftime('%Y-%m', 'now')`;
+      } else if (period === 'yearly') {
+        dateFilter = `AND strftime('%Y', date) = strftime('%Y', 'now')`;
+      }
+      
       const result = await query(
-        'SELECT b.id, b.user_id, b.category_id, c.name as category_name, b.limit_amount, b.period, b.created_at FROM budgets b LEFT JOIN categories c ON b.category_id = c.id WHERE b.user_id = ? ORDER BY b.created_at DESC',
-        [userId]
+        `SELECT b.id, b.user_id, b.category_id, c.name as category_name, b.limit_amount, b.period, b.created_at,
+                COALESCE((SELECT SUM(ABS(t.amount)) FROM transactions t WHERE t.category_id = b.category_id AND t.user_id = b.user_id AND t.type = 'expense' ${dateFilter}), 0) as spent
+         FROM budgets b LEFT JOIN categories c ON b.category_id = c.id WHERE b.user_id = ? AND b.period = ?
+         ORDER BY b.created_at DESC`,
+        [userId, period]
       );
-      res.json({ budgets: result.rows });
+      
+      const budgets = (result.rows || []).map((b: any) => ({
+        ...b,
+        spent: parseFloat(b.spent || '0'),
+        remaining: b.limit_amount - parseFloat(b.spent || '0'),
+        percentUsed: b.limit_amount > 0 ? (parseFloat(b.spent || '0') / b.limit_amount) * 100 : 0,
+      }));
+      
+      res.json({ budgets });
     } catch (err) {
       res.status(500).json({ error: (err as Error).message });
     }

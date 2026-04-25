@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Card, CardContent, Typography, LinearProgress, List, IconButton, Button, Chip, Dialog, DialogTitle, DialogContent, DialogActions, Alert } from '@mui/material';
+import { Box, Card, CardContent, Typography, LinearProgress, List, IconButton, Button, Chip, Dialog, DialogTitle, DialogContent, DialogActions, Alert, Grid } from '@mui/material';
 import { Edit as EditIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import BudgetDialog from './BudgetDialog';
+
+interface Category {
+  id: number;
+  name: string;
+  type: string;
+}
 
 interface Budget {
   id: number;
@@ -16,7 +22,9 @@ interface Budget {
 
 export function BudgetList() {
   const [budgets, setBudgets] = useState<Budget[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
+  const [period, setPeriod] = useState<'monthly' | 'yearly'>('monthly');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBudget, setEditingBudget] = useState<Budget | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -24,24 +32,29 @@ export function BudgetList() {
 
   useEffect(() => {
     fetchBudgets();
-  }, []);
+    fetchCategories();
+  }, [period]);
 
   const fetchBudgets = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/v1/budgets');
+      const response = await fetch(`/api/v1/budgets?period=${period}`);
       const data = await response.json();
-      const budgetsData = (data.budgets || []).map((b: any) => ({
-        ...b,
-        spent: Math.random() * b.limit_amount * 0.5,
-        remaining: b.limit_amount - Math.random() * b.limit_amount * 0.5,
-        percentUsed: Math.random() * 100,
-      }));
-      setBudgets(budgetsData);
+      setBudgets(data.budgets || []);
     } catch (err) {
       console.error('Failed to fetch budgets:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/v1/categories');
+      const data = await response.json();
+      setCategories(data || []);
+    } catch (err) {
+      console.error('Failed to fetch categories:', err);
     }
   };
 
@@ -98,57 +111,77 @@ export function BudgetList() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <Chip 
+            label="Monthly" 
+            onClick={() => setPeriod('monthly')} 
+            color={period === 'monthly' ? 'primary' : 'default'} 
+            variant={period === 'monthly' ? 'filled' : 'outlined'} 
+          />
+          <Chip 
+            label="Yearly" 
+            onClick={() => setPeriod('yearly')} 
+            color={period === 'yearly' ? 'primary' : 'default'}
+            variant={period === 'yearly' ? 'filled' : 'outlined'}
+          />
+        </Box>
         <Button variant="contained" startIcon={<AddIcon />} onClick={handleCreate}>
           Create Budget
         </Button>
       </Box>
+      
       {loading && <LinearProgress />}
-      <List>
+      
+      <Grid container spacing={2}>
         {budgets.map((budget) => (
-          <Card key={budget.id} sx={{ mb: 1 }}>
-            <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                <Box>
+          <Grid item xs={12} sm={6} md={4} key={budget.id}>
+            <Card>
+              <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                   <Typography variant="h6">{budget.category_name || 'Uncategorized'}</Typography>
-                  <Chip label={budget.period} size="small" />
+                  <Box>
+                    <IconButton onClick={() => handleEdit(budget)} size="small">
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton onClick={() => handleDelete(budget)} color="error" size="small">
+                      <DeleteIcon />
+                    </IconButton>
+                  </Box>
                 </Box>
-                <Box>
-                  <IconButton onClick={() => handleEdit(budget)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton onClick={() => handleDelete(budget)} color="error">
-                    <DeleteIcon />
-                  </IconButton>
+                <Typography variant="caption" color="text.secondary">{budget.period}</Typography>
+                <Box sx={{ mt: 1 }}>
+                  <LinearProgress
+                    variant="determinate"
+                    value={Math.min(budget.percentUsed, 100)}
+                    color={getProgressColor(budget.percentUsed)}
+                    sx={{ height: 10, borderRadius: 5 }}
+                  />
                 </Box>
-              </Box>
-              <LinearProgress
-                variant="determinate"
-                value={Math.min(budget.percentUsed, 100)}
-                color={getProgressColor(budget.percentUsed)}
-                sx={{ mb: 1, height: 8, borderRadius: 4 }}
-              />
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Typography variant="body2">
-                  ${(budget.spent || 0).toFixed(2)} of ${(budget.limit_amount || 0).toFixed(2)}
-                </Typography>
-                <Typography variant="body2" color={(budget.remaining || 0) < 0 ? 'error' : 'text.secondary'}>
-                  ${(budget.remaining || 0).toFixed(2)} remaining
-                </Typography>
-              </Box>
-            </CardContent>
-          </Card>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
+                  <Typography variant="body2">
+                    ${budget.spent.toFixed(0)} / ${budget.limit_amount.toFixed(0)}
+                  </Typography>
+                  <Typography variant="body2" color={budget.remaining < 0 ? 'error' : 'text.secondary'}>
+                    ${budget.remaining.toFixed(0)} left
+                  </Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
         ))}
-        {budgets.length === 0 && (
-          <Typography color="text.secondary" align="center">
-            No budgets yet. Create one to start tracking.
-          </Typography>
-        )}
-      </List>
+      </Grid>
+      
+      {budgets.length === 0 && !loading && (
+        <Alert severity="info">
+          No {period} budgets. Create one to track your spending.
+        </Alert>
+      )}
 
       <BudgetDialog
         open={dialogOpen}
         budget={editingBudget ? { id: editingBudget.id, category_id: editingBudget.category_id, limit_amount: editingBudget.limit_amount, period: editingBudget.period } : null}
+        categories={categories}
         onClose={() => setDialogOpen(false)}
         onSave={handleSave}
       />
@@ -156,7 +189,9 @@ export function BudgetList() {
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle>Delete Budget</DialogTitle>
         <DialogContent>
-          <Alert severity="warning">Are you sure you want to delete this budget?</Alert>
+          <Alert severity="warning">
+            Are you sure you want to delete this budget for "{deletingBudget?.category_name}"?
+          </Alert>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
