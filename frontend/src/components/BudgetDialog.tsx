@@ -89,12 +89,20 @@ const handleCategoryChange = async (value: unknown) => {
     }
   };
 
-  const handleDeleteCategory = async (categoryId: number) => {
-    try {
-      await fetch(`/api/v1/categories/${categoryId}`, { method: 'DELETE' });
-      fetchCategories();
-    } catch (err) {
-      alert((err as Error).message);
+  const handleDeleteCategory = async (categoryId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (confirm(`Delete category?`)) {
+      try {
+        const res = await fetch(`/api/v1/categories/${categoryId}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (!res.ok) {
+          alert(data.error || 'Failed to delete');
+          return;
+        }
+        fetchCategories();
+      } catch (err) {
+        alert((err as Error).message);
+      }
     }
   };
 
@@ -130,10 +138,7 @@ const handleCategoryChange = async (value: unknown) => {
                   <IconButton 
                     size="small" 
                     onClick={(e) => {
-                      e.stopPropagation();
-                      if (confirm(`Delete category "${cat.name}"?`)) {
-                        handleDeleteCategory(cat.id);
-                      }
+                      handleDeleteCategory(cat.id, e);
                     }}
                   >
                     <DeleteIcon fontSize="small" />
