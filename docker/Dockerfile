@@ -28,6 +28,9 @@ COPY --from=backend-builder /app/backend/dist ./backend/dist
 COPY --from=backend-builder /app/backend/node_modules ./backend/node_modules
 COPY --from=backend-builder /app/backend/package.json ./backend/package.json
 
+# Create data directory for SQLite
+RUN mkdir -p /app/data
+
 # Copy frontend build
 COPY --from=frontend-builder /app/frontend/build ./frontend/build
 
@@ -38,4 +41,4 @@ RUN npm install -g serve
 EXPOSE 3000 3001
 
 # Start both backend and frontend
-CMD ["sh", "-c", "cd backend && node dist/index.js & serve -s frontend/build -l 3001 & wait"]
+CMD ["sh", "-c", "mkdir -p /app/data && cd backend && DATABASE_URL='' node dist/index.js & serve -s frontend/build -l 3001 & wait"]
