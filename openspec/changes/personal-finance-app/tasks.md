@@ -1,38 +1,38 @@
 ## 1. Project Setup
 
-- [ ] 1.1 Initialize Git repository and set up project structure
-- [ ] 1.2 Set up Node.js backend project with Express.js and TypeScript
-- [ ] 1.3 Create React frontend project with TypeScript and Material-UI
-- [ ] 1.4 Set up PostgreSQL database with initial schema
-- [ ] 1.5 Configure environment variables (.env files for dev/test/prod)
-- [ ] 1.6 Set up ESLint and Prettier for code formatting
-- [ ] 1.7 Configure testing frameworks (Jest for backend, Vitest/Jest for frontend)
-- [ ] 1.8 Set up Docker and docker-compose for containerization
-- [ ] 1.9 Configure Docker support for Synology NAS compatibility
+- [x] 1.1 Initialize Git repository and set up project structure
+- [x] 1.2 Set up Node.js backend project with Express.js and TypeScript
+- [x] 1.3 Create React frontend project with TypeScript and Material-UI
+- [x] 1.4 Set up PostgreSQL database with initial schema
+- [x] 1.5 Configure environment variables (.env files for dev/test/prod)
+- [x] 1.6 Set up ESLint and Prettier for code formatting
+- [x] 1.7 Configure testing frameworks (Jest for backend, Vitest/Jest for frontend)
+- [x] 1.8 Set up Docker and docker-compose for containerization
+- [x] 1.9 Configure Docker support for Synology NAS compatibility
 
 ## 2. Backend Infrastructure
 
-- [ ] 2.1 Set up Express server with middleware (CORS, body-parser, helmet)
-- [ ] 2.2 Configure database connection pool and connection pooling
-- [ ] 2.3 Set up structured logging system
-- [ ] 2.4 Create error handling middleware and custom error types
-- [ ] 2.5 Set up API versioning structure (/api/v1)
-- [ ] 2.6 Configure Redis for caching and session management
-- [ ] 2.7 Set up Bull queue for background jobs
+- [x] 2.1 Set up Express server with middleware (CORS, body-parser, helmet)
+- [x] 2.2 Configure database connection pool and connection pooling
+- [x] 2.3 Set up structured logging system
+- [x] 2.4 Create error handling middleware and custom error types
+- [x] 2.5 Set up API versioning structure (/api/v1)
+- [x] 2.6 Configure Redis for caching and session management
+- [x] 2.7 Set up Bull queue for background jobs
 
 ## 3. Database Schema
 
-- [ ] 3.1 Create users table with profile information and created_at fields
-- [ ] 3.2 Create transactions table with user_id, amount, currency, date, description, type
-- [ ] 3.3 Create categories table with name, type (income/expense), user_id
-- [ ] 3.4 Create transaction_categories junction table for categorization
-- [ ] 3.5 Create budgets table with user_id, category_id, limit_amount, period (monthly/yearly)
-- [ ] 3.6 Create budget_history table for tracking budget performance over time
-- [ ] 3.7 Create accounts table to support multiple bank accounts per user
-- [ ] 3.8 Create import_history table for tracking CSV imports and duplicates
-- [ ] 3.9 Create audit_log table for tracking changes and deletions
-- [ ] 3.10 Set up database indexes on frequently queried columns
-- [ ] 3.11 Create database migrations framework
+- [x] 3.1 Create users table with profile information and created_at fields
+- [x] 3.2 Create transactions table with user_id, amount, currency, date, description, type
+- [x] 3.3 Create categories table with name, type (income/expense), user_id
+- [x] 3.4 Create transaction_categories junction table for categorization
+- [x] 3.5 Create budgets table with user_id, category_id, limit_amount, period (monthly/yearly)
+- [x] 3.6 Create budget_history table for tracking budget performance over time
+- [x] 3.7 Create accounts table to support multiple bank accounts per user
+- [x] 3.8 Create import_history table for tracking CSV imports and duplicates
+- [x] 3.9 Create audit_log table for tracking changes and deletions
+- [x] 3.10 Set up database indexes on frequently queried columns
+- [x] 3.11 Create database migrations framework
 
 ## 4. Transaction Import
 
@@ -207,12 +207,12 @@
 
 ## 17. Docker & Deployment
 
-- [ ] 17.1 Create Dockerfile for Node.js backend
-- [ ] 17.2 Create Dockerfile for React frontend
-- [ ] 17.3 Create docker-compose.yml for local development
-- [ ] 17.4 Create docker-compose for production with volumes
-- [ ] 17.5 Configure Docker networking for app, database, Redis
-- [ ] 17.6 Set up volume mounts for data persistence
+- [x] 17.1 Create Dockerfile for Node.js backend
+- [x] 17.2 Create Dockerfile for React frontend
+- [x] 17.3 Create docker-compose.yml for local development
+- [x] 17.4 Create docker-compose for production with volumes
+- [x] 17.5 Configure Docker networking for app, database, Redis
+- [x] 17.6 Set up volume mounts for data persistence
 - [ ] 17.7 Create deployment guide for Synology NAS
 - [ ] 17.8 Test deployment on Synology Docker/Container Manager
 - [ ] 17.9 Configure CI/CD pipeline (GitHub Actions)
