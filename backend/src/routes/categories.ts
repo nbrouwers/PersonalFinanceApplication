@@ -85,5 +85,76 @@ export function createCategoryRouter(pool: Pool): express.Router {
     }
   });
 
+  router.get('/rules', async (req: Request, res: Response) => {
+    try {
+      const userId = 1;
+      const result = await pool.query(
+        `SELECT * FROM category_rules WHERE user_id = $1 ORDER BY type, keyword`,
+        [userId]
+      );
+      res.json(result.rows);
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  router.post('/rules', async (req: Request, res: Response) => {
+    try {
+      const userId = 1;
+      const { keyword, categoryId, type } = req.body;
+      
+      if (!keyword || !categoryId) {
+        return res.status(400).json({ error: 'keyword and categoryId are required' });
+      }
+      
+      const result = await pool.query(
+        `INSERT INTO category_rules (user_id, keyword, category_id, type) VALUES ($1, $2, $3, $4) RETURNING *`,
+        [userId, keyword, categoryId, type || 'keyword']
+      );
+      
+      res.status(201).json(result.rows[0]);
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  router.delete('/rules/:id', async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      await pool.query(`DELETE FROM category_rules WHERE id = $1`, [id]);
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
+  router.post('/bulk', async (req: Request, res: Response) => {
+    try {
+      const userId = 1;
+      const { transactionIds, categoryId } = req.body;
+      
+      if (!transactionIds || !Array.isArray(transactionIds) || !categoryId) {
+        return res.status(400).json({ error: 'transactionIds array and categoryId required' });
+      }
+      
+      const client = await pool.connect();
+      try {
+        await client.query('BEGIN');
+        for (const txId of transactionIds) {
+          await client.query(
+            `UPDATE transactions SET category_id = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 AND user_id = $3`,
+            [categoryId, txId, userId]
+          );
+        }
+        await client.query('COMMIT');
+        res.json({ success: true, updated: transactionIds.length });
+      } finally {
+        client.release();
+      }
+    } catch (err) {
+      res.status(500).json({ error: (err as Error).message });
+    }
+  });
+
   return router;
 }
