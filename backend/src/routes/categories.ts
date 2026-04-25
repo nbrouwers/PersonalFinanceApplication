@@ -6,8 +6,9 @@ export function createCategoriesRouter(db: { query: (sql: string, params?: any[]
   router.get('/', async (_req: Request, res: Response) => {
     try {
       const userId = 1;
+      const typeFilter = _req.query.type ? ` AND type = '${_req.query.type}'` : '';
       const result = await db.query(
-        `SELECT * FROM categories WHERE user_id IS NULL OR user_id = ? ORDER BY type, name`,
+        `SELECT MIN(id) as id, user_id, name, type, is_default, MIN(created_at) as created_at FROM categories WHERE (user_id IS NULL OR user_id = ?)${typeFilter} GROUP BY name, type ORDER BY type, name`,
         [userId]
       );
       res.json(result.rows || []);
