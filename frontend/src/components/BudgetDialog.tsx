@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, FormControl, InputLabel, Select, Box } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, FormControl, InputLabel, Select, Box, IconButton } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 
 interface Category {
@@ -63,22 +63,6 @@ const handleCategoryChange = async (value: unknown) => {
     if (numValue === -1) {
       setNewCategoryMode(true);
       setCategoryId(0);
-    } else if (numValue === -2) {
-      const catId = categoryId;
-      if (catId && confirm('Delete this category?')) {
-        try {
-          const res = await fetch(`/api/v1/categories/${catId}`, { method: 'DELETE' });
-          if (res.ok) {
-            fetchCategories();
-            setCategoryId(0);
-          } else {
-            const data = await res.json();
-            alert(data.error || 'Failed to delete');
-          }
-        } catch (err) {
-          alert((err as Error).message);
-        }
-      }
     } else {
       setCategoryId(numValue);
       setNewCategoryMode(false);
@@ -102,6 +86,15 @@ const handleCategoryChange = async (value: unknown) => {
       console.error('Failed to create category:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId: number) => {
+    try {
+      await fetch(`/api/v1/categories/${categoryId}`, { method: 'DELETE' });
+      fetchCategories();
+    } catch (err) {
+      alert((err as Error).message);
     }
   };
 
@@ -132,19 +125,26 @@ const handleCategoryChange = async (value: unknown) => {
           >
             {categories.map((cat) => (
               <MenuItem key={cat.id} value={cat.id}>
-                {cat.name}
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                  <span>{cat.name}</span>
+                  <IconButton 
+                    size="small" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (confirm(`Delete category "${cat.name}"?`)) {
+                        handleDeleteCategory(cat.id);
+                      }
+                    }}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Box>
               </MenuItem>
             ))}
             <MenuItem value={-1}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <AddIcon fontSize="small" />
                 Create new category
-              </Box>
-            </MenuItem>
-            <MenuItem value={-2}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'error.main' }}>
-                <DeleteIcon fontSize="small" />
-                Delete category
               </Box>
             </MenuItem>
           </Select>

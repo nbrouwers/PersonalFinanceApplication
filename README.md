@@ -108,7 +108,13 @@ cd frontend && npm start
 Or use the convenience script:
 
 ```bash
-./scripts/start-dev.sh
+./scripts/restart-dev.sh
+```
+
+To stop the servers:
+
+```bash
+./scripts/stop-dev.sh
 ```
 
 Open http://localhost:3001
