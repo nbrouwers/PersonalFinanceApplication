@@ -21,9 +21,10 @@ interface BudgetDialogProps {
   categories: Category[];
   onClose: () => void;
   onSave: (budget: Budget) => void;
+  onCategoriesChange?: () => void;
 }
 
-export function BudgetDialog({ open, budget, categories, onClose, onSave }: BudgetDialogProps) {
+export function BudgetDialog({ open, budget, categories, onClose, onSave, onCategoriesChange }: BudgetDialogProps) {
   const [categoryId, setCategoryId] = useState<number>(0);
   const [amount, setAmount] = useState<string>('');
   const [period, setPeriod] = useState<'monthly' | 'yearly'>('monthly');
@@ -88,6 +89,7 @@ export function BudgetDialog({ open, budget, categories, onClose, onSave }: Budg
         return;
       }
       if (categoryId === catId) setCategoryId(0);
+      if (onCategoriesChange) onCategoriesChange();
     } catch (err) {
       alert((err as Error).message);
     }

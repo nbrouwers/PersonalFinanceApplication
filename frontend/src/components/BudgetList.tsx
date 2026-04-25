@@ -184,6 +184,7 @@ export function BudgetList() {
         categories={categories}
         onClose={() => setDialogOpen(false)}
         onSave={handleSave}
+        onCategoriesChange={fetchCategories}
       />
 
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
