@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, FormControl, InputLabel, Select, Box } from '@mui/material';
-import { Add as AddIcon } from '@mui/icons-material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, FormControl, InputLabel, Select, Box, IconButton } from '@mui/material';
+import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 
 interface Category {
   id: number;
@@ -89,6 +89,15 @@ const handleCategoryChange = async (value: unknown) => {
     }
   };
 
+  const handleDeleteCategory = async (categoryId: number) => {
+    try {
+      await fetch(`/api/v1/categories/${categoryId}`, { method: 'DELETE' });
+      fetchCategories();
+    } catch (err) {
+      alert((err as Error).message);
+    }
+  };
+
   const handleSave = async () => {
     if (!categoryId || !amount) return;
     setLoading(true);
@@ -116,7 +125,20 @@ const handleCategoryChange = async (value: unknown) => {
           >
             {categories.map((cat) => (
               <MenuItem key={cat.id} value={cat.id}>
-                {cat.name}
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                  <span>{cat.name}</span>
+                  <IconButton 
+                    size="small" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (confirm(`Delete category "${cat.name}"?`)) {
+                        handleDeleteCategory(cat.id);
+                      }
+                    }}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Box>
               </MenuItem>
             ))}
             <MenuItem value={-1}>

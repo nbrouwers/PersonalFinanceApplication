@@ -50,6 +50,12 @@ export function createCategoriesRouter(db: { query: (sql: string, params?: any[]
   router.delete('/:id', async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
+      
+      const budgetCheck = await db.query('SELECT COUNT(*) as count FROM budgets WHERE category_id = ?', [id]);
+      if (budgetCheck.rows?.[0]?.count > 0) {
+        return res.status(400).json({ error: 'Cannot delete category that is assigned to budgets' });
+      }
+      
       const result = await db.query(`DELETE FROM categories WHERE id = ? AND is_default = 0 RETURNING *`, [id]);
       if (!result.rows?.length) return res.status(404).json({ error: 'Category not found or cannot be deleted' });
       res.json({ success: true });
