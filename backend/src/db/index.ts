@@ -1,5 +1,7 @@
 import Database from 'better-sqlite3';
 import { Pool, PoolConfig } from 'pg';
+import * as path from 'path';
+import * as fs from 'fs';
 
 let db: Database.Database | null = null;
 let pool: Pool | null = null;
@@ -12,6 +14,10 @@ const isSQLite = (): boolean => {
 export const initDatabase = (): void => {
   if (isSQLite()) {
     const dbPath = process.env.SQLITE_PATH || './data/personal-finance.db';
+    const dbDir = path.dirname(dbPath);
+    if (!fs.existsSync(dbDir)) {
+      fs.mkdirSync(dbDir, { recursive: true });
+    }
     console.log('[DB] Using SQLite at:', dbPath);
     db = new Database(dbPath);
     db.pragma('journal_mode = WAL');
