@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+.env.*
+.DS_Store
+.idea/
+.vscode/
+coverage/
+*.log
+docker-compose.override.yml
