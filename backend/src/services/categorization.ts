@@ -47,17 +47,17 @@ export async function suggestCategory(description: string, userId: number): Prom
     return { categoryId: rulesMatch, confidence: 0.9 };
   }
   
-  const keywords: Record<string, number> = {
-    grocery: 1, groceries: 1, whole foods: 1, trader joe: 1, safeway: 1,
+  const keywords = {
+    grocery: 1, groceries: 1, "whole foods": 1, "trader joe": 1, safeway: 1,
     restaurant: 2, cafe: 2, coffee: 2, starbucks: 2, mcdonald: 2,
     gas: 3, fuel: 3, shell: 3, chevron: 3,
     uber: 4, lyft: 4, taxi: 4,
-    netflix: 5, spotify: 5, hulu: 5, amazon prime: 5,
+    netflix: 5, spotify: 5, hulu: 5, "amazon prime": 5,
     electric: 6, utility: 6, water: 6,
     doctor: 7, pharmacy: 7, cvs: 7, walgreens: 7,
     amazon: 8, target: 8, walmart: 8,
     salary: 9, paycheck: 9,
-  };
+  } as Record<string, number>;
   
   const lowerDesc = description.toLowerCase();
   for (const [keyword, categoryId] of Object.entries(keywords)) {
