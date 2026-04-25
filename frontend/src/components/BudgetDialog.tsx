@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, FormControl, InputLabel, Select, Box } from '@mui/material';
+import { Add as AddIcon } from '@mui/icons-material';
 
 interface Category {
   id: number;
@@ -27,6 +28,8 @@ export function BudgetDialog({ open, budget, onClose, onSave }: BudgetDialogProp
   const [amount, setAmount] = useState<string>('');
   const [period, setPeriod] = useState<'monthly' | 'yearly'>('monthly');
   const [loading, setLoading] = useState(false);
+  const [newCategoryMode, setNewCategoryMode] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
 
   useEffect(() => {
     if (open) {
@@ -40,6 +43,8 @@ export function BudgetDialog({ open, budget, onClose, onSave }: BudgetDialogProp
         setAmount('');
         setPeriod('monthly');
       }
+      setNewCategoryMode(false);
+      setNewCategoryName('');
     }
   }, [open, budget]);
 
@@ -50,6 +55,17 @@ export function BudgetDialog({ open, budget, onClose, onSave }: BudgetDialogProp
       setCategories(data || []);
     } catch (err) {
       console.error('Failed to fetch categories:', err);
+    }
+  };
+
+const handleCategoryChange = async (value: unknown) => {
+    const numValue = typeof value === 'string' ? parseInt(value) : (value as number);
+    if (numValue === -1) {
+      setNewCategoryMode(true);
+      setCategoryId(0);
+    } else {
+      setCategoryId(numValue);
+      setNewCategoryMode(false);
     }
   };
 
@@ -74,17 +90,42 @@ export function BudgetDialog({ open, budget, onClose, onSave }: BudgetDialogProp
         <FormControl fullWidth margin="normal">
           <InputLabel>Category</InputLabel>
           <Select
-            value={categoryId}
+            value={newCategoryMode ? -1 : categoryId}
             label="Category"
-            onChange={(e) => setCategoryId(e.target.value as number)}
+            onChange={(e) => handleCategoryChange(e.target.value)}
           >
             {categories.map((cat) => (
               <MenuItem key={cat.id} value={cat.id}>
                 {cat.name}
               </MenuItem>
             ))}
+            <MenuItem value={-1}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <AddIcon fontSize="small" />
+                Create new category
+              </Box>
+            </MenuItem>
           </Select>
         </FormControl>
+        
+        {newCategoryMode && (
+          <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+            <TextField
+              fullWidth
+              label="New category name"
+              value={newCategoryName}
+              onChange={(e) => setNewCategoryName(e.target.value)}
+            />
+            <Button 
+              variant="contained" 
+              onClick={handleCreateCategory}
+              disabled={!newCategoryName.trim() || loading}
+            >
+              Add
+            </Button>
+          </Box>
+        )}
+        
         <TextField
           margin="normal"
           label="Limit Amount"
