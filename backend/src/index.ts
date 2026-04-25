@@ -1,7 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { Pool } from 'pg';
+import { initDatabase, query, close } from './db';
 import { createImportRouter } from './routes/import';
 import { createTransactionRouter } from './routes/transactions';
 import { createCategoryRouter } from './routes/categories';
@@ -12,9 +12,8 @@ import exportRouter from './routes/export';
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/personal_finance',
-});
+// Initialize database
+initDatabase();
 
 app.use(helmet());
 app.use(cors());
@@ -25,11 +24,12 @@ app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.use('/api/v1/import', createImportRouter(pool));
-app.use('/api/v1/transactions', createTransactionRouter(pool));
-app.use('/api/v1/categories', createCategoryRouter(pool));
-app.use('/api/v1/budgets', createBudgetRouter(pool));
-app.use('/api/v1/reports', createReportsRouter(pool));
+// Routes using db.query() abstraction
+app.use('/api/v1/import', createImportRouter({ query } as any));
+app.use('/api/v1/transactions', createTransactionRouter({ query } as any));
+app.use('/api/v1/categories', createCategoryRouter({ query } as any));
+app.use('/api/v1/budgets', createBudgetRouter({ query } as any));
+app.use('/api/v1/reports', createReportsRouter({ query } as any));
 app.use('/api/v1/export', exportRouter);
 
 app.use((_req: Request, res: Response) => {
@@ -48,3 +48,5 @@ if (require.main === module) {
 }
 
 export default app;
+
+export { query, close };
