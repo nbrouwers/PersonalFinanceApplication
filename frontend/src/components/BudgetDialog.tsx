@@ -69,6 +69,26 @@ const handleCategoryChange = async (value: unknown) => {
     }
   };
 
+  const handleCreateCategory = async () => {
+    if (!newCategoryName.trim()) return;
+    setLoading(true);
+    try {
+      const response = await fetch('/api/v1/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newCategoryName, type: 'expense' }),
+      });
+      const newCategory = await response.json();
+      setNewCategoryMode(false);
+      setNewCategoryName('');
+      setCategoryId(newCategory.id);
+    } catch (err) {
+      console.error('Failed to create category:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSave = async () => {
     if (!categoryId || !amount) return;
     setLoading(true);
