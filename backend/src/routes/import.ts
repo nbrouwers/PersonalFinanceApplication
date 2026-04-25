@@ -8,7 +8,7 @@ export function createImportRouter(db: { query: (sql: string, params?: any[]) =>
       const { csvContent, accountId, userId } = req.body;
       if (!csvContent) return res.status(400).json({ error: 'CSV content is required' });
       
-      const lines = csvContent.split('\n').filter(l => l.trim());
+      const lines = csvContent.split('\n').filter((l: string) => l.trim());
       const transactions = lines.slice(1, 11).map((line: string) => {
         const cols = line.split(',');
         return { date: cols[0], amount: parseFloat(cols[2]) || 0, description: cols[1], type: (parseFloat(cols[2]) || 0) >= 0 ? 'income' : 'expense' };

@@ -33,3 +33,5 @@ export async function query(text: string, params?: unknown[]): Promise<unknown> 
     client.release();
   }
 }
+
+export default { Pool };

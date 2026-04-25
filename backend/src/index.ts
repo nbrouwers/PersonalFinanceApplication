@@ -4,8 +4,8 @@ import helmet from 'helmet';
 import { initDatabase, query, close } from './db';
 import { createImportRouter } from './routes/import';
 import { createTransactionRouter } from './routes/transactions';
-import { createCategoryRouter } from './routes/categories';
-import { createBudgetRouter } from './routes/budgets';
+import { createCategoriesRouter } from './routes/categories';
+import { createBudgetsRouter } from './routes/budgets';
 import { createReportsRouter } from './routes/reports';
 import exportRouter from './routes/export';
 
@@ -27,8 +27,8 @@ app.get('/health', (_req: Request, res: Response) => {
 // Routes using db.query() abstraction
 app.use('/api/v1/import', createImportRouter({ query } as any));
 app.use('/api/v1/transactions', createTransactionRouter({ query } as any));
-app.use('/api/v1/categories', createCategoryRouter({ query } as any));
-app.use('/api/v1/budgets', createBudgetRouter({ query } as any));
+app.use('/api/v1/categories', createCategoriesRouter({ query } as any));
+app.use('/api/v1/budgets', createBudgetsRouter({ query } as any));
 app.use('/api/v1/reports', createReportsRouter({ query } as any));
 app.use('/api/v1/export', exportRouter);
 
