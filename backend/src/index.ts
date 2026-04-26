@@ -7,6 +7,7 @@ import { createTransactionRouter } from './routes/transactions';
 import { createCategoriesRouter } from './routes/categories';
 import { createBudgetsRouter } from './routes/budgets';
 import { createReportsRouter } from './routes/reports';
+import { createAccountsRouter } from './routes/accounts';
 import exportRouter from './routes/export';
 
 const app: Application = express();
@@ -30,6 +31,7 @@ app.use('/api/v1/transactions', createTransactionRouter({ query } as any));
 app.use('/api/v1/categories', createCategoriesRouter({ query } as any));
 app.use('/api/v1/budgets', createBudgetsRouter({ query } as any));
 app.use('/api/v1/reports', createReportsRouter({ query } as any));
+app.use('/api/v1/accounts', createAccountsRouter({ query } as any));
 app.use('/api/v1/export', exportRouter);
 
 app.use((_req: Request, res: Response) => {
