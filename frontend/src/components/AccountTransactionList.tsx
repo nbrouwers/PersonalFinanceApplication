@@ -12,7 +12,7 @@ import {
   TextField,
   CircularProgress,
   Pagination,
-  Button,
+  InputAdornment,
 } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
 
@@ -102,7 +102,13 @@ export function AccountTransactionList({ accountId }: AccountTransactionListProp
           placeholder="Search by description..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          startAdornment={<SearchIcon sx={{ mr: 1, color: 'action.active' }} />}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon sx={{ color: 'action.active' }} />
+              </InputAdornment>
+            ),
+          }}
           size="small"
           sx={{ flex: 1 }}
         />
