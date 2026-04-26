@@ -121,7 +121,7 @@ export function CSVImport() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {preview.slice(0, 10).map((tx, idx) => (
+                {preview.map((tx, idx) => (
                   <TableRow key={idx}>
                     <TableCell>{tx.date}</TableCell>
                     <TableCell sx={{ fontSize: '0.75rem' }}>{tx.iban || '-'}</TableCell>

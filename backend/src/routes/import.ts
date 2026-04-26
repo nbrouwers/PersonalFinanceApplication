@@ -89,9 +89,9 @@ export function createImportRouter(db: { query: (sql: string, params?: any[]) =>
       const format = detectFormat(firstLine);
       
       let transactions = [];
-      const maxRows = Math.min(lines.length - 1, 20);
       
-      for (let i = 1; i <= maxRows; i++) {
+      for (let i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
         let tx;
         if (format === 'triodos') {
           tx = parseTriodosLine(lines[i]);
