@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS accounts (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
+    iban VARCHAR(34),
     type VARCHAR(50) NOT NULL CHECK (type IN ('checking', 'savings', 'credit', 'cash')),
     balance DECIMAL(15, 2) DEFAULT 0,
     currency VARCHAR(3) DEFAULT 'USD',

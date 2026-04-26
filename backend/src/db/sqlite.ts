@@ -42,6 +42,7 @@ function initializeSQLiteSchema(): void {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
       name TEXT NOT NULL,
+      iban TEXT,
       type TEXT NOT NULL CHECK (type IN ('checking', 'savings', 'credit', 'cash')),
       balance REAL DEFAULT 0,
       currency TEXT DEFAULT 'USD',
