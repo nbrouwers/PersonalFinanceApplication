@@ -8,6 +8,9 @@ interface ParsedTransaction {
   description: string;
   type: 'income' | 'expense';
   currency: string;
+  iban?: string;
+  creditDebit?: string;
+  name?: string;
 }
 
 export function CSVImport() {
