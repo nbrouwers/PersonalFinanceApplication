@@ -34,6 +34,7 @@ const parseTriodosLine = (line: string): any => {
   const iban = cols[1];
   const amount = parseDutchNumber(cols[2]);
   const creditDebit = cols[3];
+  const name = cols[4];
   const description = cols[7];
   const type = creditDebit === 'Credit' ? 'income' : 'expense';
   
@@ -42,6 +43,8 @@ const parseTriodosLine = (line: string): any => {
     iban,
     amount: Math.abs(amount),
     type,
+    creditDebit,
+    name,
     description,
     currency: 'EUR',
   };

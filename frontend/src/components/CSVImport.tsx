@@ -110,20 +110,24 @@ export function CSVImport() {
               <TableHead>
                 <TableRow>
                   <TableCell>Date</TableCell>
-                  <TableCell>Description</TableCell>
+                  <TableCell>Account</TableCell>
                   <TableCell align="right">Amount</TableCell>
-                  <TableCell>Type</TableCell>
+                  <TableCell>Direction</TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Description</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {preview.slice(0, 10).map((tx, idx) => (
                   <TableRow key={idx}>
                     <TableCell>{tx.date}</TableCell>
-                    <TableCell>{tx.description}</TableCell>
+                    <TableCell sx={{ fontSize: '0.75rem' }}>{tx.iban || '-'}</TableCell>
                     <TableCell align="right" sx={{ color: tx.type === 'income' ? 'success.main' : 'error.main' }}>
                       {tx.amount.toFixed(2)}
                     </TableCell>
-                    <TableCell>{tx.type}</TableCell>
+                    <TableCell>{tx.creditDebit || tx.type}</TableCell>
+                    <TableCell>{tx.name || '-'}</TableCell>
+                    <TableCell sx={{ maxWidth: 300 }}>{tx.description}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
