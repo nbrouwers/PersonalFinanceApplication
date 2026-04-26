@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { CssBaseline, ThemeProvider, createTheme, Container, Typography, AppBar, Toolbar, Tabs, Tab, Box, Grid, Card, CardContent, Paper } from '@mui/material';
-import { AccountBalance, ListAlt, Upload, TrendingUp } from '@mui/icons-material';
+import { AccountBalance, ListAlt, Upload, TrendingUp, AccountBalanceWallet } from '@mui/icons-material';
 
 import { TransactionList } from './components/TransactionList';
 import { BudgetList } from './components/BudgetList';
 import { CSVImport } from './components/CSVImport';
+import { AccountList, Account } from './components/AccountList';
+import { AccountDetail } from './components/AccountDetail';
 
 const theme = createTheme({
   palette: {
@@ -39,6 +41,7 @@ interface DashboardSummary {
 function App() {
   const [tab, setTab] = useState(0);
   const [summary, setSummary] = useState<DashboardSummary>({ income: 0, expense: 0, net: 0, savingsRate: 0 });
+  const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
 
   useEffect(() => {
     fetchSummary();
@@ -108,6 +111,7 @@ function App() {
           <Tabs value={tab} onChange={(_, v) => setTab(v)} centered>
             <Tab icon={<ListAlt />} label="Transactions" />
             <Tab icon={<TrendingUp />} label="Budgets" />
+            <Tab icon={<AccountBalanceWallet />} label="Accounts" />
             <Tab icon={<Upload />} label="Import" />
           </Tabs>
         </Paper>
@@ -121,6 +125,17 @@ function App() {
         </TabPanel>
 
         <TabPanel value={tab} index={2}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={4}>
+              <AccountList onAccountSelect={(account) => setSelectedAccount(account)} />
+            </Grid>
+            <Grid item xs={12} md={8}>
+              {selectedAccount && <AccountDetail account={selectedAccount} />}
+            </Grid>
+          </Grid>
+        </TabPanel>
+
+        <TabPanel value={tab} index={3}>
           <CSVImport />
         </TabPanel>
       </Container>
