@@ -11,6 +11,7 @@ interface ParsedTransaction {
   iban?: string;
   creditDebit?: string;
   name?: string;
+  contraAccount?: string;
 }
 
 export function CSVImport() {

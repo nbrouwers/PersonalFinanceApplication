@@ -23,11 +23,41 @@ const detectFormat = (firstLine: string): 'triodos' | 'generic' => {
   if (lower.includes('datum') || lower.includes('iban') || lower.includes('bedrag')) {
     return 'triodos';
   }
+  if (/"\d{2}-\d{2}-\d{4}/.test(firstLine)) {
+    return 'triodos';
+  }
   return 'generic';
 };
 
+const parseCSVLine = (line: string): string[] => {
+  const result: string[] = [];
+  let current = '';
+  let inQuotes = false;
+  
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    
+    if (char === '"') {
+      if (inQuotes && line[i + 1] === '"') {
+        current += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (char === ',' && !inQuotes) {
+      result.push(current.trim());
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+  result.push(current.trim());
+  
+  return result;
+};
+
 const parseTriodosLine = (line: string): any => {
-  const cols = line.split('","').map(s => s.replace(/"/g, ''));
+  const cols = parseCSVLine(line);
   if (cols.length < 8) return null;
   
   const date = parseEuropeanDate(cols[0]);
@@ -35,6 +65,7 @@ const parseTriodosLine = (line: string): any => {
   const amount = parseDutchNumber(cols[2]);
   const creditDebit = cols[3];
   const name = cols[4];
+  const contraAccount = cols[5];
   const description = cols[7];
   const type = creditDebit === 'Credit' ? 'income' : 'expense';
   
@@ -45,6 +76,7 @@ const parseTriodosLine = (line: string): any => {
     type,
     creditDebit,
     name,
+    contraAccount,
     description,
     currency: 'EUR',
   };
