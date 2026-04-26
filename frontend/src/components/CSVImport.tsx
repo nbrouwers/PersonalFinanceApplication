@@ -116,7 +116,6 @@ export function CSVImport() {
                   <TableCell>Date</TableCell>
                   <TableCell>Account</TableCell>
                   <TableCell align="right">Amount</TableCell>
-                  <TableCell>Direction</TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell>Description</TableCell>
                 </TableRow>
@@ -129,7 +128,6 @@ export function CSVImport() {
                     <TableCell align="right" sx={{ color: tx.type === 'income' ? 'success.main' : 'error.main' }}>
                       {tx.amount.toFixed(2)}
                     </TableCell>
-                    <TableCell>{tx.creditDebit || tx.type}</TableCell>
                     <TableCell>{tx.name || '-'}</TableCell>
                     <TableCell sx={{ maxWidth: 300 }}>{tx.description}</TableCell>
                   </TableRow>
