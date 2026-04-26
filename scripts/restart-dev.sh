@@ -2,12 +2,11 @@
 # Restart both backend and frontend
 
 echo "Stopping existing processes..."
-pkill -f "node.*backend" 2>/dev/null
-pkill -f "react-scripts start" 2>/dev/null
-sleep 1
+./scripts/stop-dev.sh
+sleep 2
 
 echo "Starting backend..."
-cd backend && npm run dev &
+cd backend && npm start &
 sleep 3
 
 echo "Starting frontend..."
