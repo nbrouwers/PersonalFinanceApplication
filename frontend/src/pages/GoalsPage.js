@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Snackbar, Alert, Box, Button } from '@mui/material';
 import { api } from '../api/client';
+import { formatEuro, formatDate } from '../utils/format';
 import GoalForm from '../components/GoalForm';
+
+let nextId = 1;
 
 function GoalsPage() {
   const [goals, setGoals] = useState([]);
@@ -42,7 +45,8 @@ function GoalsPage() {
             <Box sx={{ flex: 1 }}>
               <Typography variant="subtitle1">{g.name}</Typography>
               <Typography variant="body2" color="text.secondary">
-                ${g.target_amount} by {g.target_date?.slice(0, 10) || 'no date'} {g.description ? `— ${g.description}` : ''}
+                {formatEuro(g.target_amount)} by {g.target_date ? formatDate(g.target_date) : 'no date'}
+                {g.description ? ` — ${g.description}` : ''}
               </Typography>
             </Box>
             <Button size="small" onClick={() => setEditGoal(g)}>Edit</Button>

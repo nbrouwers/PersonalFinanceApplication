@@ -198,6 +198,34 @@ A graphical representation of financial data used on the Dashboard.
 - Bar Chart: Used to show budget progress comparisons
 - Progress Bar: Used to show goal completion percentage
 
+## Locale Formatting
+
+Formats used for displaying monetary values and dates, based on the Dutch locale (`nl-NL`).
+
+### Euro Formatting
+Monetary values formatted according to Dutch conventions using the euro symbol and `nl-NL` locale.
+
+**Rules:**
+- Symbol: € (euro sign, placed before the amount with a space)
+- Thousands separator: `.` (dot), e.g., `€ 1.000`
+- Decimal separator: `,` (comma), e.g., `€ 1,50`
+- Two decimal places always shown, e.g., `€ 1.234,56`
+
+**Examples:** `€ 0,00`, `€ 1.250,00`, `€ 12.345,67`
+
+### Dutch Date Formatting
+Dates displayed according to Dutch conventions using `dd-mm-yyyy` notation.
+
+**Rules:**
+- Day: 2-digit (01–31)
+- Month: 2-digit (01–12)
+- Year: 4-digit
+- Separator: `-` (hyphen)
+
+**Examples:** `15-05-2026`, `01-01-2027`
+
+**Implementation:** Uses JavaScript `Intl.NumberFormat('nl-NL')` and `Intl.DateTimeFormat('nl-NL')` — no external dependencies.
+
 ## Non-Core Concepts (Explicitly Out of Scope)
 
 The following concepts are intentionally NOT part of the core domain for this application:

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Paper, Typography, Box, LinearProgress, CircularProgress, Skeleton } from '@mui/material';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { formatEuro, formatDate } from '../utils/format';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#FF6384'];
 
@@ -28,7 +29,7 @@ function DashboardPage() {
       <Grid item xs={12}>
         <Typography variant="h4" gutterBottom>Dashboard</Typography>
         <Typography variant="subtitle1" color="text.secondary">
-          Total Balance: <strong>${data.total_balance?.toFixed(2) || '0.00'}</strong>
+          Total Balance: <strong>{formatEuro(data.total_balance)}</strong>
         </Typography>
       </Grid>
 
@@ -43,7 +44,7 @@ function DashboardPage() {
                 <Pie data={accountPieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
                   {accountPieData.map((_, idx) => <Cell key={idx} fill={COLORS[idx % COLORS.length]} />)}
                 </Pie>
-                <Tooltip formatter={v => `$${v.toFixed(2)}`} />
+                <Tooltip formatter={v => formatEuro(v)} />
               </PieChart>
             </ResponsiveContainer>
           )}
@@ -63,7 +64,7 @@ function DashboardPage() {
                 <Box key={idx} sx={{ mb: 2 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography variant="body2">{b.name}</Typography>
-                    <Typography variant="body2">${b.spent.toFixed(0)} / ${b.allocated.toFixed(0)}</Typography>
+                    <Typography variant="body2">{formatEuro(b.spent)} / {formatEuro(b.allocated)}</Typography>
                   </Box>
                   <LinearProgress variant="determinate" value={pct} color={color} sx={{ height: 10, borderRadius: 5 }} />
                 </Box>
@@ -93,7 +94,8 @@ function DashboardPage() {
                         </Box>
                       </Box>
                       <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                        ${g.current_amount?.toFixed(0)} / ${g.target_amount?.toFixed(0)}
+                        {formatEuro(g.current_amount)} / {formatEuro(g.target_amount)}
+                        {g.target_date && <> &middot; {formatDate(g.target_date)}</>}
                       </Typography>
                     </Paper>
                   </Grid>

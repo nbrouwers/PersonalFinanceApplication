@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { formatEuro, formatDate } from '../utils/format';
 
 const CsvUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -52,13 +53,7 @@ const CsvUpload = () => {
       <form onSubmit={handleUpload}>
         <div>
           <label htmlFor="csv-file">Select CSV file:</label>
-          <input
-            type="file"
-            id="csv-file"
-            accept=".csv"
-            onChange={handleFileChange}
-            disabled={uploading}
-          />
+          <input type="file" id="csv-file" accept=".csv" onChange={handleFileChange} disabled={uploading} />
         </div>
         <button type="submit" disabled={uploading || !selectedFile}>
           {uploading ? 'Uploading...' : 'Upload'}
@@ -77,7 +72,7 @@ const CsvUpload = () => {
               <ul>
                 {result.duplicates.map((dup, index) => (
                   <li key={index}>
-                    {dup.date}: {dup.description} - ${dup.amount}
+                    {formatDate(dup.date)}: {dup.description} — {formatEuro(dup.amount)}
                   </li>
                 ))}
               </ul>

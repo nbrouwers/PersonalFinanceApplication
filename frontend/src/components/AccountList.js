@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatEuro } from '../utils/format';
 
 const AccountList = ({ accounts, onEdit, onDelete }) => {
   if (accounts.length === 0) return <p>No accounts found.</p>;
@@ -11,7 +12,7 @@ const AccountList = ({ accounts, onEdit, onDelete }) => {
           <tr>
             <th>Name</th>
             <th>Type</th>
-            <th>Balance ($)</th>
+            <th>Balance</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -20,7 +21,7 @@ const AccountList = ({ accounts, onEdit, onDelete }) => {
             <tr key={acc.id || index}>
               <td>{acc.name}</td>
               <td>{acc.accountType || acc.account_type}</td>
-              <td>{acc.balance.toFixed(2)}</td>
+              <td>{formatEuro(acc.balance)}</td>
               <td>
                 <button onClick={() => onEdit(acc)}>Edit</button>
                 <button onClick={() => onDelete(acc.id || index)}>Delete</button>
