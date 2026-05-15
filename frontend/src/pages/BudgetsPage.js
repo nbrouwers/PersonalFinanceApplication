@@ -1,33 +1,36 @@
-import React, { useState, useCallback } from 'react';
-import { Typography, Snackbar, Alert, Paper, Box, Button } from '@mui/material';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Typography, Snackbar, Alert, Box, Button } from '@mui/material';
+import { api } from '../api/client';
 import BudgetForm from '../components/BudgetForm';
 import BudgetAlert from '../components/BudgetAlert';
-
-let nextId = 1;
 
 function BudgetsPage() {
   const [budgets, setBudgets] = useState([]);
   const [editBudget, setEditBudget] = useState(null);
   const [snack, setSnack] = useState({ open: false, message: '', severity: 'success' });
 
-  const handleAdded = useCallback((budget) => {
-    const newBudget = { ...budget, id: nextId++ };
-    setBudgets(prev => [...prev, newBudget]);
-    setSnack({ open: true, message: `Budget "${budget.name}" created!`, severity: 'success' });
+  const fetchBudgets = useCallback(async () => {
+    try { setBudgets(await api.get('/budgets')); } catch { setBudgets([]); }
   }, []);
 
-  const handleUpdated = useCallback((updated) => {
-    setBudgets(prev => prev.map(b => b.id === updated.id ? updated : b));
-    setSnack({ open: true, message: `Budget "${updated.name}" updated!`, severity: 'success' });
-  }, []);
+  useEffect(() => { fetchBudgets(); }, [fetchBudgets]);
 
-  const handleDelete = useCallback((id) => {
-    setBudgets(prev => {
-      const deleted = prev.find(b => b.id === id);
-      if (deleted) setSnack({ open: true, message: `Budget "${deleted.name}" deleted!`, severity: 'info' });
-      return prev.filter(b => b.id !== id);
-    });
-  }, []);
+  const show = (msg, sev) => setSnack({ open: true, message: msg, severity: sev });
+
+  const handleSaved = useCallback((budget) => {
+    fetchBudgets();
+    show(`Budget "${budget.name}" ${editBudget ? 'updated' : 'created'}!`, 'success');
+    setEditBudget(null);
+  }, [fetchBudgets, editBudget]);
+
+  const handleDelete = useCallback(async (id) => {
+    const b = budgets.find(b => b.id === id);
+    try {
+      await api.del(`/budgets/${id}`);
+      fetchBudgets();
+      show(`Budget "${b?.name}" deleted!`, 'info');
+    } catch (err) { show(err.message, 'error'); }
+  }, [budgets, fetchBudgets]);
 
   return (
     <>
@@ -45,14 +48,9 @@ function BudgetsPage() {
           </Box>
         ))
       )}
-      <BudgetForm
-        onBudgetAdded={handleAdded}
-        onBudgetUpdated={handleUpdated}
-        editBudget={editBudget}
-        onCancelEdit={() => setEditBudget(null)}
-      />
+      <BudgetForm onBudgetSaved={handleSaved} editBudget={editBudget} onCancelEdit={() => setEditBudget(null)} />
       <Snackbar open={snack.open} autoHideDuration={4000} onClose={() => setSnack(s => ({ ...s, open: false }))}>
-        <Alert severity={snack.severity} sx={{ width: '100%' }}>{snack.message}</Alert>
+        <Alert severity={snack.severity}>{snack.message}</Alert>
       </Snackbar>
     </>
   );

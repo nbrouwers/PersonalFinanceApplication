@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { api } from '../api/client';
 
-const BudgetForm = ({ onBudgetAdded, onBudgetUpdated, editBudget, onCancelEdit }) => {
+const BudgetForm = ({ onBudgetSaved, editBudget, onCancelEdit }) => {
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
   const [period, setPeriod] = useState('monthly');
@@ -14,9 +15,9 @@ const BudgetForm = ({ onBudgetAdded, onBudgetUpdated, editBudget, onCancelEdit }
       setName(editBudget.name);
       setAmount(String(editBudget.amount));
       setPeriod(editBudget.period);
-      setCategoryId(String(editBudget.categoryId || ''));
-      setStartDate(editBudget.startDate || '');
-      setEndDate(editBudget.endDate || '');
+      setCategoryId(String(editBudget.category_id));
+      setStartDate(editBudget.start_date?.slice(0, 10) || '');
+      setEndDate(editBudget.end_date?.slice(0, 10) || '');
     } else {
       setName(''); setAmount(''); setPeriod('monthly');
       setCategoryId(''); setStartDate(''); setEndDate('');
@@ -26,20 +27,20 @@ const BudgetForm = ({ onBudgetAdded, onBudgetUpdated, editBudget, onCancelEdit }
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    if (!name || !amount || !categoryId || !startDate || !endDate) {
-      setError('Please fill in all fields');
-      return;
-    }
-    const data = { name, amount: parseFloat(amount), period, categoryId: parseInt(categoryId), startDate, endDate };
-    await new Promise(resolve => setTimeout(resolve, 500));
-    if (editBudget) {
-      onBudgetUpdated({ ...editBudget, ...data });
-      onCancelEdit();
-    } else {
-      onBudgetAdded(data);
-      setName(''); setAmount(''); setPeriod('monthly');
-      setCategoryId(''); setStartDate(''); setEndDate('');
-    }
+    if (!name || !amount || !categoryId || !startDate || !endDate) { setError('Fill all fields'); return; }
+    const payload = {
+      name, amount: parseFloat(amount), period,
+      category_id: parseInt(categoryId),
+      start_date: new Date(startDate).toISOString(),
+      end_date: new Date(endDate).toISOString(),
+    };
+    try {
+      const result = editBudget
+        ? await api.put(`/budgets/${editBudget.id}`, payload)
+        : await api.post('/budgets', payload);
+      onBudgetSaved(result);
+      if (!editBudget) { setName(''); setAmount(''); setPeriod('monthly'); setCategoryId(''); setStartDate(''); setEndDate(''); }
+    } catch (err) { setError(err.message); }
   };
 
   return (

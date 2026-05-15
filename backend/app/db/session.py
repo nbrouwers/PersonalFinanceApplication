@@ -15,4 +15,10 @@ def get_db():
         db.close()
 
 def init_db():
+    import app.models.user
+    import app.models.account
+    import app.models.transaction
+    import app.models.category
+    import app.models.budget
+    import app.models.goal
     Base.metadata.create_all(bind=engine)

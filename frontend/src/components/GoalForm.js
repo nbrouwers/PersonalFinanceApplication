@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { api } from '../api/client';
 
-const GoalForm = ({ onGoalAdded, onGoalUpdated, editGoal, onCancelEdit }) => {
+const GoalForm = ({ onGoalSaved, editGoal, onCancelEdit }) => {
   const [name, setName] = useState('');
   const [targetAmount, setTargetAmount] = useState('');
   const [targetDate, setTargetDate] = useState('');
@@ -10,8 +11,8 @@ const GoalForm = ({ onGoalAdded, onGoalUpdated, editGoal, onCancelEdit }) => {
   useEffect(() => {
     if (editGoal) {
       setName(editGoal.name);
-      setTargetAmount(String(editGoal.targetAmount));
-      setTargetDate(editGoal.targetDate || '');
+      setTargetAmount(String(editGoal.target_amount));
+      setTargetDate(editGoal.target_date?.slice(0, 10) || '');
       setDescription(editGoal.description || '');
     } else {
       setName(''); setTargetAmount(''); setTargetDate(''); setDescription('');
@@ -21,19 +22,19 @@ const GoalForm = ({ onGoalAdded, onGoalUpdated, editGoal, onCancelEdit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    if (!name || !targetAmount) {
-      setError('Please fill in name and target amount');
-      return;
-    }
-    const data = { name, targetAmount: parseFloat(targetAmount), targetDate: targetDate || null, description: description || null };
-    await new Promise(resolve => setTimeout(resolve, 500));
-    if (editGoal) {
-      onGoalUpdated({ ...editGoal, ...data });
-      onCancelEdit();
-    } else {
-      onGoalAdded(data);
-      setName(''); setTargetAmount(''); setTargetDate(''); setDescription('');
-    }
+    if (!name || !targetAmount) { setError('Fill in name and target amount'); return; }
+    const payload = {
+      name, target_amount: parseFloat(targetAmount),
+      target_date: targetDate ? new Date(targetDate).toISOString() : null,
+      description: description || null,
+    };
+    try {
+      const result = editGoal
+        ? await api.put(`/goals/${editGoal.id}`, payload)
+        : await api.post('/goals', payload);
+      onGoalSaved(result);
+      if (!editGoal) { setName(''); setTargetAmount(''); setTargetDate(''); setDescription(''); }
+    } catch (err) { setError(err.message); }
   };
 
   return (

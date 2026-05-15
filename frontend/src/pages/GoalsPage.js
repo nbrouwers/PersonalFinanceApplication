@@ -1,32 +1,35 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Typography, Snackbar, Alert, Box, Button } from '@mui/material';
+import { api } from '../api/client';
 import GoalForm from '../components/GoalForm';
-
-let nextId = 1;
 
 function GoalsPage() {
   const [goals, setGoals] = useState([]);
   const [editGoal, setEditGoal] = useState(null);
   const [snack, setSnack] = useState({ open: false, message: '', severity: 'success' });
 
-  const handleAdded = useCallback((goal) => {
-    const newGoal = { ...goal, id: nextId++ };
-    setGoals(prev => [...prev, newGoal]);
-    setSnack({ open: true, message: `Goal "${goal.name}" added!`, severity: 'success' });
+  const fetchGoals = useCallback(async () => {
+    try { setGoals(await api.get('/goals')); } catch { setGoals([]); }
   }, []);
 
-  const handleUpdated = useCallback((updated) => {
-    setGoals(prev => prev.map(g => g.id === updated.id ? updated : g));
-    setSnack({ open: true, message: `Goal "${updated.name}" updated!`, severity: 'success' });
-  }, []);
+  useEffect(() => { fetchGoals(); }, [fetchGoals]);
 
-  const handleDelete = useCallback((id) => {
-    setGoals(prev => {
-      const deleted = prev.find(g => g.id === id);
-      if (deleted) setSnack({ open: true, message: `Goal "${deleted.name}" deleted!`, severity: 'info' });
-      return prev.filter(g => g.id !== id);
-    });
-  }, []);
+  const show = (msg, sev) => setSnack({ open: true, message: msg, severity: sev });
+
+  const handleSaved = useCallback((goal) => {
+    fetchGoals();
+    show(`Goal "${goal.name}" ${editGoal ? 'updated' : 'created'}!`, 'success');
+    setEditGoal(null);
+  }, [fetchGoals, editGoal]);
+
+  const handleDelete = useCallback(async (id) => {
+    const g = goals.find(g => g.id === id);
+    try {
+      await api.del(`/goals/${id}`);
+      fetchGoals();
+      show(`Goal "${g?.name}" deleted!`, 'info');
+    } catch (err) { show(err.message, 'error'); }
+  }, [goals, fetchGoals]);
 
   return (
     <>
@@ -39,7 +42,7 @@ function GoalsPage() {
             <Box sx={{ flex: 1 }}>
               <Typography variant="subtitle1">{g.name}</Typography>
               <Typography variant="body2" color="text.secondary">
-                ${g.targetAmount} by {g.targetDate || 'no date'} {g.description ? `— ${g.description}` : ''}
+                ${g.target_amount} by {g.target_date?.slice(0, 10) || 'no date'} {g.description ? `— ${g.description}` : ''}
               </Typography>
             </Box>
             <Button size="small" onClick={() => setEditGoal(g)}>Edit</Button>
@@ -47,14 +50,9 @@ function GoalsPage() {
           </Box>
         ))
       )}
-      <GoalForm
-        onGoalAdded={handleAdded}
-        onGoalUpdated={handleUpdated}
-        editGoal={editGoal}
-        onCancelEdit={() => setEditGoal(null)}
-      />
+      <GoalForm onGoalSaved={handleSaved} editGoal={editGoal} onCancelEdit={() => setEditGoal(null)} />
       <Snackbar open={snack.open} autoHideDuration={4000} onClose={() => setSnack(s => ({ ...s, open: false }))}>
-        <Alert severity={snack.severity} sx={{ width: '100%' }}>{snack.message}</Alert>
+        <Alert severity={snack.severity}>{snack.message}</Alert>
       </Snackbar>
     </>
   );
