@@ -18,10 +18,13 @@
 
 **OpenSpec Workflow:**
 - Propose change: `/opsx-provide <description>` then follow prompts
+  During propose, after drafting the proposal but before creating tasks:
+  1. Check `openspec/ubiquitous-language.md` for terms affected by this change
+  2. Update the UL document with any new or changed domain/UI concepts
+  3. The agent pauses after all artifacts (proposal, design, specs, tasks, UL) are created so you can review and edit before proceeding
 - Apply changes: `/opsx-apply`
 - Archive change: `/opsx-archive <change-name>`
   Archive commits and pushes to git automatically: `git add -A && git commit -m "Archive: <change-name>" && git push`
-- View ubiquitous language: `openspec/ubiquitous-language.md`
 
 ## Key Architectural Notes
 
@@ -45,4 +48,4 @@
 3. OpenSpec spec changes require updating both change specs and main specs (on archive)
 4. CSV import expects format: date,description,amount,[account_name],[category_name]
 5. Tests require setting DATABASE_URL environment variable for backend tests
-6. **Ubiquitous language**: Always check and update `openspec/ubiquitous-language.md` when proposing changes that introduce new domain or UI concepts
+6. **Ubiquitous language**: Always check and update `openspec/ubiquitous-language.md` when proposing changes — see OpenSpec Workflow section for the full process

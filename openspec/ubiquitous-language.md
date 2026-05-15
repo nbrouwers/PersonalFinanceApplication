@@ -7,8 +7,8 @@ This document defines the shared vocabulary used consistently across the codebas
 This is a living document that should be updated as the domain evolves. Whenever a new concept is introduced or an existing concept is refined during development, this document should be updated to reflect the change.
 
 The process for updating the ubiquitous language is:
-1. During development, if a new term is used or an existing term is clarified, note the change.
-2. During code review or specification review, update this document accordingly.
+1. **During an OpenSpec proposal**: After drafting the proposal, check this document for domain/UI concepts affected by the change. Update it before proceeding to design and specs. The agent will pause after all artifacts are created so you can review and edit. See the OpenSpec Workflow section in `AGENTS.md` for the full process.
+2. During code review or specification review, verify that all new terms are captured here.
 3. When updating this document, consider whether the change affects any specifications, code, or other documentation.
 4. Communicate changes to the team to ensure everyone is using the same vocabulary.
 
