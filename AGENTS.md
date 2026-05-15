@@ -20,6 +20,7 @@
 - Propose change: `/opsx-provide <description>` then follow prompts
 - Apply changes: `/opsx-apply`
 - Archive change: `/opsx-archive <change-name>`
+  Archive commits and pushes to git automatically: `git add -A && git commit -m "Archive: <change-name>" && git push`
 - View ubiquitous language: `openspec/ubiquitous-language.md`
 
 ## Key Architectural Notes
