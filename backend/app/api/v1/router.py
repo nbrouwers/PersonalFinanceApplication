@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from app.routers import accounts, transactions, categories, budgets
 from app.routers import import_ as import_router
-from app.routers import goals
+from app.routers import goals, dashboard
 
 api_router = APIRouter()
 api_router.include_router(accounts.router, prefix="/accounts", tags=["accounts"])
@@ -10,5 +10,6 @@ api_router.include_router(categories.router, prefix="/categories", tags=["catego
 api_router.include_router(budgets.router, prefix="/budgets", tags=["budgets"])
 api_router.include_router(import_router.router, prefix="/import", tags=["import"])
 api_router.include_router(goals.router, prefix="/goals", tags=["goals"])
+api_router.include_router(dashboard.router)
 
 # TODO: Include reports router as it is implemented

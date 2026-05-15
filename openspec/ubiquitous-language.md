@@ -161,6 +161,43 @@ A person who uses the application to manage their personal finances.
 4. User confirms import of new transactions
 5. System records transactions and updates related balances/goals
 
+## User Interface Concepts
+
+### Dashboard
+The main landing page that provides a graphical summary of the user's financial health at a glance.
+
+**Elements:**
+- Account Balance Overview: A pie chart or bar chart showing the balance of each account
+- Budget Progress Bars: Horizontal bars comparing spent amount vs allocated amount per budget, with color coding (green < 75%, yellow < 90%, red >= 90%)
+- Savings Goal Progress: Cards with target amount, current amount, and a visual progress indicator (percent complete)
+
+**Operations:**
+- View dashboard on app start or via navigation
+- Refresh to see latest data (no real-time updates in initial version)
+
+### Navigation
+The mechanism for switching between pages within the application.
+
+**Elements:**
+- Sidebar: Persistent navigation menu on desktop (MUI Drawer)
+- Bottom Navigation: Navigation tabs on mobile devices
+- Routes: Client-side paths for each page (/dashboard, /accounts, /budgets, /goals, /import)
+
+**Pages:**
+- Dashboard: Main overview page
+- Accounts: CRUD management for financial accounts
+- Budgets: CRUD management for budgets
+- Goals: CRUD management for savings goals
+- Import: CSV file upload for transaction import
+
+### Chart
+A graphical representation of financial data used on the Dashboard.
+
+**Types:**
+- Pie Chart: Used to show account balance distribution
+- Bar Chart: Used to show budget progress comparisons
+- Progress Bar: Used to show goal completion percentage
+
 ## Non-Core Concepts (Explicitly Out of Scope)
 
 The following concepts are intentionally NOT part of the core domain for this application:

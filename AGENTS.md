@@ -45,3 +45,4 @@
 3. OpenSpec spec changes require updating both change specs and main specs (on archive)
 4. CSV import expects format: date,description,amount,[account_name],[category_name]
 5. Tests require setting DATABASE_URL environment variable for backend tests
+6. **Ubiquitous language**: Always check and update `openspec/ubiquitous-language.md` when proposing changes that introduce new domain or UI concepts
